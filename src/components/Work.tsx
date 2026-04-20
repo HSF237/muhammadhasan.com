@@ -43,37 +43,45 @@ const projects = [
 
 const Work = () => {
   useGSAP(() => {
-    if (window.innerWidth <= 1024 || ScrollTrigger.isTouch) {
-      return;
-    }
-
     const container = document.querySelector(".work-flex") as HTMLElement;
     const wrapper = document.querySelector(".work-section") as HTMLElement;
     
     if (!container || !wrapper) return;
 
+    const getScrollAmount = () => {
+      const scrollWidth = container.scrollWidth;
+      const clientWidth = window.innerWidth;
+      return scrollWidth - clientWidth;
+    };
+
     let timeline = gsap.timeline({
       scrollTrigger: {
         trigger: wrapper,
         start: "top top",
-        end: () => `+=${(container.scrollWidth - wrapper.clientWidth) * 0.7}`,
+        end: () => `+=${getScrollAmount() * 0.85}`,
         scrub: 1,
         pin: true,
         pinSpacing: true,
         id: "work",
-        anticipatePin: 1,
         invalidateOnRefresh: true,
+        refreshPriority: 1,
       },
     });
 
     timeline.to(container, {
-      x: () => -(container.scrollWidth - wrapper.clientWidth),
+      x: () => -getScrollAmount(),
       ease: "none",
     });
+
+    // Refresh everything once images are fully loaded
+    window.addEventListener("load", () => ScrollTrigger.refresh());
+    const refreshTimeout = setTimeout(() => ScrollTrigger.refresh(), 1000);
 
     return () => {
       timeline.kill();
       ScrollTrigger.getById("work")?.kill();
+      window.removeEventListener("load", () => ScrollTrigger.refresh());
+      clearTimeout(refreshTimeout);
     };
   }, []);
 
