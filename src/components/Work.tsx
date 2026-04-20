@@ -4,7 +4,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
-gsap.registerPlugin(useGSAP);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const projects = [
   {
@@ -56,25 +56,19 @@ const Work = () => {
       scrollTrigger: {
         trigger: wrapper,
         start: "top top",
-        end: () => {
-          const scrollWidth = container.scrollWidth;
-          const clientWidth = wrapper.clientWidth;
-          const distance = scrollWidth - clientWidth;
-          return `+=${distance + 50}`;
-        },
-        scrub: 1.2,
+        end: () => `+=${container.scrollWidth - wrapper.clientWidth}`,
+        scrub: 1,
         pin: true,
         pinSpacing: true,
         id: "work",
         anticipatePin: 1,
-        onUpdate: (self) => {
-          const scrollWidth = container.scrollWidth;
-          const clientWidth = wrapper.clientWidth;
-          const maxScroll = scrollWidth - clientWidth;
-          const translateX = maxScroll * self.progress;
-          gsap.set(".work-flex", { x: -translateX });
-        },
+        invalidateOnRefresh: true,
       },
+    });
+
+    timeline.to(container, {
+      x: () => -(container.scrollWidth - wrapper.clientWidth),
+      ease: "none",
     });
 
     return () => {
@@ -121,7 +115,7 @@ const Work = () => {
                   VIEW PROJECT →
                 </a>
               </div>
-              <WorkImage image={project.image} alt={project.name} />
+              <WorkImage image={project.image} alt={project.name} link={project.link} />
             </div>
           ))}
         </div>

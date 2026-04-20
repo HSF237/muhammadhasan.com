@@ -129,11 +129,11 @@ const TechStack = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollY = window.scrollY || document.documentElement.scrollTop;
-      const threshold = document
-        .getElementById("work")!
-        .getBoundingClientRect().top;
-      setIsActive(scrollY > threshold);
+      const techstackElement = document.querySelector(".techstack");
+      if (!techstackElement) return;
+      const rect = techstackElement.getBoundingClientRect();
+      // Activate when the top of the techstack section is near or above the middle of viewport
+      setIsActive(rect.top < window.innerHeight);
     };
     document.querySelectorAll(".header a").forEach((elem) => {
       const element = elem as HTMLAnchorElement;
