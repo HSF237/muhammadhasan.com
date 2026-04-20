@@ -128,6 +128,7 @@ const TechStack = () => {
   const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
+    ScrollTrigger.refresh();
     const handleScroll = () => {
       const techstackElement = document.querySelector(".techstack");
       if (!techstackElement) return;

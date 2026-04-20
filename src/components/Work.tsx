@@ -45,7 +45,7 @@ const Work = () => {
   useGSAP(() => {
     const container = document.querySelector(".work-flex") as HTMLElement;
     const wrapper = document.querySelector(".work-section") as HTMLElement;
-    
+
     if (!container || !wrapper) return;
 
     const getScrollAmount = () => {
