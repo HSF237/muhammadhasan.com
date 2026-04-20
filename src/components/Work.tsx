@@ -58,7 +58,7 @@ const Work = () => {
       scrollTrigger: {
         trigger: wrapper,
         start: "top top",
-        end: () => `+=${getScrollAmount() * 0.85}`,
+        end: () => `+=${getScrollAmount() * 0.75}`,
         scrub: 1,
         pin: true,
         pinSpacing: true,
@@ -73,14 +73,16 @@ const Work = () => {
       ease: "none",
     });
 
+    const refreshAll = () => ScrollTrigger.refresh();
+
     // Refresh everything once images are fully loaded
-    window.addEventListener("load", () => ScrollTrigger.refresh());
-    const refreshTimeout = setTimeout(() => ScrollTrigger.refresh(), 1000);
+    window.addEventListener("load", refreshAll);
+    const refreshTimeout = setTimeout(refreshAll, 1000);
 
     return () => {
       timeline.kill();
       ScrollTrigger.getById("work")?.kill();
-      window.removeEventListener("load", () => ScrollTrigger.refresh());
+      window.removeEventListener("load", refreshAll);
       clearTimeout(refreshTimeout);
     };
   }, []);
