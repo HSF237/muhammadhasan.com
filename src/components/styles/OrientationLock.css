@@ -1,0 +1,63 @@
+.orientation-lock-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: rgba(11, 8, 12, 0.98);
+  color: #f5f3f8;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease-in-out;
+}
+
+.orientation-lock-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.orientation-lock-message {
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.orientation-lock-icon {
+  width: 110px;
+  height: 110px;
+  margin: 0 auto 1.25rem;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.orientation-lock-message h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.orientation-lock-message p {
+  margin: 1rem 0 0;
+  color: #dcd7e4;
+  line-height: 1.7;
+}
+
+.orientation-lock-tip {
+  margin-top: 1.5rem;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.95rem;
+}
+
+.orientation-lock-hidden {
+  visibility: hidden;
+  pointer-events: none;
+  user-select: none;
+}
