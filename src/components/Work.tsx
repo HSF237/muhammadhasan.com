@@ -56,7 +56,7 @@ const Work = () => {
       scrollTrigger: {
         trigger: wrapper,
         start: "top top",
-        end: () => `+=${container.scrollWidth - wrapper.clientWidth}`,
+        end: () => `+=${(container.scrollWidth - wrapper.clientWidth) * 0.7}`,
         scrub: 1,
         pin: true,
         pinSpacing: true,
