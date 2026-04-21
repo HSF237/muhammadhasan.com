@@ -60,11 +60,11 @@ const Work = () => {
           const scrollWidth = container.scrollWidth;
           const clientWidth = wrapper.clientWidth;
           const distance = scrollWidth - clientWidth;
-          return `+=${distance * 0.3}`;
+          return `+=${distance}`;
         },
-        scrub: 0,
+        scrub: 1,
         pin: true,
-        pinSpacing: false,
+        pinSpacing: true,
         id: "work",
         anticipatePin: 1,
         onUpdate: (self) => {
