@@ -8,14 +8,20 @@ const OrientationLock = ({ children }: PropsWithChildren) => {
   const [isLocked, setIsLocked] = useState(false);
   const [needsRefresh, setNeedsRefresh] = useState(false);
   const { setIsLoading } = useLoading();
+  const lastOrientation = useRef<string>(window.matchMedia("(orientation: portrait)").matches ? "portrait" : "landscape");
 
   const updateOrientation = () => {
     const isSmallScreen = window.innerWidth <= ORIENTATION_LOCK_MAX_WIDTH;
     const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+    const currentOrientation = isPortrait ? "portrait" : "landscape";
+    
+    // Check if we just refreshed in landscape
+    const hasRefreshed = sessionStorage.getItem("orientation_refreshed") === "true";
 
     if (!isSmallScreen) {
       setIsLocked(false);
       setNeedsRefresh(false);
+      sessionStorage.removeItem("orientation_refreshed");
       return;
     }
 
@@ -23,34 +29,46 @@ const OrientationLock = ({ children }: PropsWithChildren) => {
       setIsLocked(true);
       setNeedsRefresh(false);
       setIsLoading(false);
+      sessionStorage.removeItem("orientation_refreshed");
+      lastOrientation.current = "portrait";
       return;
     }
 
-    // If landscape on small screen
-    setIsLocked(false);
-    setNeedsRefresh(true);
+    // If we are in landscape...
+    if (lastOrientation.current === "portrait" && !hasRefreshed) {
+      // User just tilted to landscape, but hasn't refreshed yet
+      setIsLocked(false);
+      setNeedsRefresh(true);
+    } else if (hasRefreshed) {
+      // User has refreshed and is in landscape, let them in
+      setIsLocked(false);
+      setNeedsRefresh(false);
+    } else {
+      // Started in landscape or other case
+      setIsLocked(false);
+      setNeedsRefresh(false);
+    }
   };
 
   const handleRefresh = () => {
+    sessionStorage.setItem("orientation_refreshed", "true");
     window.location.reload();
-  };
-
-  const handleOrientationChange = () => {
-    setTimeout(updateOrientation, 200);
   };
 
   useEffect(() => {
     updateOrientation();
-    window.addEventListener("orientationchange", handleOrientationChange);
-    window.addEventListener("resize", handleOrientationChange);
+    
+    const handleResize = () => {
+      setTimeout(updateOrientation, 200);
+    };
 
+    window.addEventListener("resize", handleResize);
     const mq = window.matchMedia("(orientation: portrait)");
     const mediaListener = () => updateOrientation();
     mq.addEventListener ? mq.addEventListener("change", mediaListener) : mq.addListener(mediaListener);
 
     return () => {
-      window.removeEventListener("orientationchange", handleOrientationChange);
-      window.removeEventListener("resize", handleOrientationChange);
+      window.removeEventListener("resize", handleResize);
       mq.removeEventListener ? mq.removeEventListener("change", mediaListener) : mq.removeListener(mediaListener);
     };
   }, []);
@@ -75,9 +93,7 @@ const OrientationLock = ({ children }: PropsWithChildren) => {
           </div>
         )}
       </div>
-      <div className={isLocked || needsRefresh ? "orientation-lock-hidden" : undefined}>
-        {children}
-      </div>
+      {(isLocked || needsRefresh) ? null : children}
     </>
   );
 };
