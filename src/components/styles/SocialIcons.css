@@ -10,12 +10,23 @@
 .social-icons {
   position: absolute;
   left: -20px;
-  bottom: 20px;
+  bottom: 0px;
   display: none;
   flex-direction: column;
-  gap: 8px;
+  gap: 15px;
   z-index: 999;
   padding: 10px;
+  padding-bottom: 120px;
+}
+.social-icons::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 100px;
+  background: linear-gradient(to bottom, var(--accentColor), transparent);
 }
 .social-icons:hover {
   transition: 0.3s;

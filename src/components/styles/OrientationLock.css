@@ -61,3 +61,28 @@
   pointer-events: none;
   user-select: none;
 }
+
+.refresh-button {
+  margin-top: 2rem;
+  background: var(--accentColor);
+  color: #0b080c;
+  border: none;
+  padding: 1rem 2rem;
+  font-family: inherit;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.refresh-button:hover {
+  background: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+.refresh-button:active {
+  transform: translateY(0);
+}

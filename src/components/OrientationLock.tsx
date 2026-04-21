@@ -6,40 +6,37 @@ const ORIENTATION_LOCK_MAX_WIDTH = 900;
 
 const OrientationLock = ({ children }: PropsWithChildren) => {
   const [isLocked, setIsLocked] = useState(false);
-  const { setIsLoading, setLoading } = useLoading();
-
-  const prevPortrait = useRef<boolean | null>(null);
+  const [needsRefresh, setNeedsRefresh] = useState(false);
+  const { setIsLoading } = useLoading();
 
   const updateOrientation = () => {
     const isSmallScreen = window.innerWidth <= ORIENTATION_LOCK_MAX_WIDTH;
     const isPortrait = window.matchMedia("(orientation: portrait)").matches;
 
     if (!isSmallScreen) {
-      prevPortrait.current = null;
       setIsLocked(false);
+      setNeedsRefresh(false);
       return;
     }
 
     if (isPortrait) {
-      prevPortrait.current = true;
       setIsLocked(true);
+      setNeedsRefresh(false);
       setIsLoading(false);
       return;
     }
 
-    if (prevPortrait.current === true) {
-      prevPortrait.current = false;
-      setLoading(0);
-      setIsLoading(true);
-      window.scrollTo(0, 0);
-      return;
-    }
-
+    // If landscape on small screen
     setIsLocked(false);
+    setNeedsRefresh(true);
+  };
+
+  const handleRefresh = () => {
+    window.location.reload();
   };
 
   const handleOrientationChange = () => {
-    setTimeout(updateOrientation, 120);
+    setTimeout(updateOrientation, 200);
   };
 
   useEffect(() => {
@@ -49,36 +46,36 @@ const OrientationLock = ({ children }: PropsWithChildren) => {
 
     const mq = window.matchMedia("(orientation: portrait)");
     const mediaListener = () => updateOrientation();
-    if (mq.addEventListener) {
-      mq.addEventListener("change", mediaListener);
-    } else {
-      mq.addListener(mediaListener);
-    }
+    mq.addEventListener ? mq.addEventListener("change", mediaListener) : mq.addListener(mediaListener);
 
     return () => {
       window.removeEventListener("orientationchange", handleOrientationChange);
       window.removeEventListener("resize", handleOrientationChange);
-      if (mq.removeEventListener) {
-        mq.removeEventListener("change", mediaListener);
-      } else {
-        mq.removeListener(mediaListener);
-      }
+      mq.removeEventListener ? mq.removeEventListener("change", mediaListener) : mq.removeListener(mediaListener);
     };
   }, []);
 
   return (
     <>
-      <div className={`orientation-lock-overlay ${isLocked ? "active" : ""}`}>
-        <div className="orientation-lock-message">
-          <div className="orientation-lock-icon">📱</div>
-          <h1>Rotate your phone</h1>
-          <p>Please turn your device to landscape mode to view this site.</p>
-          <p className="orientation-lock-tip">
-            If you rotate back to portrait, the site will pause until you return to landscape.
-          </p>
-        </div>
+      <div className={`orientation-lock-overlay ${isLocked || needsRefresh ? "active" : ""}`}>
+        {isLocked ? (
+          <div className="orientation-lock-message">
+            <div className="orientation-lock-icon">📱</div>
+            <h1>Landscape Only</h1>
+            <p>Please rotate your device to landscape mode to enter the experience.</p>
+          </div>
+        ) : (
+          <div className="orientation-lock-message">
+            <div className="orientation-lock-icon">✨</div>
+            <h1>Ready to Explore</h1>
+            <p>Rotation detected. Please refresh to initialize the cinematic experience.</p>
+            <button className="refresh-button" onClick={handleRefresh}>
+              REFRESH AND VIEW
+            </button>
+          </div>
+        )}
       </div>
-      <div className={isLocked ? "orientation-lock-hidden" : undefined}>
+      <div className={isLocked || needsRefresh ? "orientation-lock-hidden" : undefined}>
         {children}
       </div>
     </>

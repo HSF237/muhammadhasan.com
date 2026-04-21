@@ -56,26 +56,29 @@ const Work = () => {
       scrollTrigger: {
         trigger: wrapper,
         start: "top top",
-        end: () => {
-          const scrollWidth = container.scrollWidth;
-          const clientWidth = wrapper.clientWidth;
-          const distance = scrollWidth - clientWidth;
-          return `+=${distance * 0.4}`;
-        },
-        scrub: 0.5,
+        end: () => `+=${window.innerHeight * 1.2}`,
+        scrub: true,
         pin: true,
         pinSpacing: true,
         id: "work",
         anticipatePin: 1,
-        onUpdate: (self) => {
-          const scrollWidth = container.scrollWidth;
-          const clientWidth = wrapper.clientWidth;
-          const maxScroll = scrollWidth - clientWidth;
-          const translateX = maxScroll * self.progress;
-          gsap.set(".work-flex", { x: -translateX });
-        },
       },
     });
+
+    timeline.to(".work-flex", {
+      x: () => {
+        const scrollWidth = container.scrollWidth;
+        const clientWidth = wrapper.clientWidth;
+        return -(scrollWidth - clientWidth);
+      },
+      ease: "none",
+    });
+
+    // Short timeout to ensure all sibling components (like TechStack) are rendered 
+    // and the smoother knows the final page height
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 100);
 
     return () => {
       timeline.kill();

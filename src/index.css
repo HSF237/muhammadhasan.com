@@ -95,10 +95,11 @@ body {
   width: 100%;
   position: relative;
   height: var(--vh);
-  margin: 80px auto 0;
+  margin: 100px auto 0;
   padding: 60px 0;
   background-color: #000;
   box-sizing: border-box;
+  z-index: 1;
 }
 
 .techstack h2 {
@@ -114,6 +115,21 @@ body {
 .tech-canvas {
   width: 100% !important;
   height: 100% !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #000;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--accentColor);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #fff;
 }
 
 @media screen and (min-width: 768px) {
