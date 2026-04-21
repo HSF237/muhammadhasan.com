@@ -13,7 +13,6 @@ const OrientationLock = ({ children }: PropsWithChildren) => {
   const updateOrientation = () => {
     const isSmallScreen = window.innerWidth <= ORIENTATION_LOCK_MAX_WIDTH;
     const isPortrait = window.matchMedia("(orientation: portrait)").matches;
-    const currentOrientation = isPortrait ? "portrait" : "landscape";
     
     // Check if we just refreshed in landscape
     const hasRefreshed = sessionStorage.getItem("orientation_refreshed") === "true";
