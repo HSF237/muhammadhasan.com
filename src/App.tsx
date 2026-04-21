@@ -1,4 +1,5 @@
 import { lazy, Suspense } from "react";
+import { Analytics } from "@vercel/analytics/react";
 import "./App.css";
 
 const CharacterModel = lazy(() => import("./components/Character"));
@@ -20,6 +21,7 @@ const App = () => {
           </Suspense>
         </OrientationLock>
       </LoadingProvider>
+      <Analytics />
     </>
   );
 };
