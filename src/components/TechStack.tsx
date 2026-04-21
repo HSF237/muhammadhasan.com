@@ -3,8 +3,6 @@ import { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import { EffectComposer, N8AO } from "@react-three/postprocessing";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   BallCollider,
   Physics,
@@ -12,8 +10,6 @@ import {
   CylinderCollider,
   RapierRigidBody,
 } from "@react-three/rapier";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const textureLoader = new THREE.TextureLoader();
 const imageUrls = [
@@ -132,13 +128,12 @@ const TechStack = () => {
   const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
-    ScrollTrigger.refresh();
     const handleScroll = () => {
-      const techstackElement = document.querySelector(".techstack");
-      if (!techstackElement) return;
-      const rect = techstackElement.getBoundingClientRect();
-      // Activate when the top of the techstack section is near or above the middle of viewport
-      setIsActive(rect.top < window.innerHeight);
+      const scrollY = window.scrollY || document.documentElement.scrollTop;
+      const threshold = document
+        .getElementById("work")!
+        .getBoundingClientRect().top;
+      setIsActive(scrollY > threshold);
     };
     document.querySelectorAll(".header a").forEach((elem) => {
       const element = elem as HTMLAnchorElement;

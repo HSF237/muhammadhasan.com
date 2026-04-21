@@ -43,47 +43,43 @@ const projects = [
 
 const Work = () => {
   useGSAP(() => {
+    if (window.innerWidth <= 1024 || ScrollTrigger.isTouch) {
+      return;
+    }
+
     const container = document.querySelector(".work-flex") as HTMLElement;
     const wrapper = document.querySelector(".work-section") as HTMLElement;
-
+    
     if (!container || !wrapper) return;
-
-    const getScrollAmount = () => {
-      const scrollWidth = container.scrollWidth;
-      const clientWidth = window.innerWidth;
-      return scrollWidth - clientWidth;
-    };
 
     let timeline = gsap.timeline({
       scrollTrigger: {
         trigger: wrapper,
         start: "top top",
-        end: () => `+=${getScrollAmount() * 0.75}`,
-        scrub: 1,
+        end: () => {
+          const scrollWidth = container.scrollWidth;
+          const clientWidth = wrapper.clientWidth;
+          const distance = scrollWidth - clientWidth;
+          return `+=${distance * 0.3}`;
+        },
+        scrub: 0,
         pin: true,
-        pinSpacing: true,
+        pinSpacing: false,
         id: "work",
-        invalidateOnRefresh: true,
-        refreshPriority: 1,
+        anticipatePin: 1,
+        onUpdate: (self) => {
+          const scrollWidth = container.scrollWidth;
+          const clientWidth = wrapper.clientWidth;
+          const maxScroll = scrollWidth - clientWidth;
+          const translateX = maxScroll * self.progress;
+          gsap.set(".work-flex", { x: -translateX });
+        },
       },
     });
-
-    timeline.to(container, {
-      x: () => -getScrollAmount(),
-      ease: "none",
-    });
-
-    const refreshAll = () => ScrollTrigger.refresh();
-
-    // Refresh everything once images are fully loaded
-    window.addEventListener("load", refreshAll);
-    const refreshTimeout = setTimeout(refreshAll, 1000);
 
     return () => {
       timeline.kill();
       ScrollTrigger.getById("work")?.kill();
-      window.removeEventListener("load", refreshAll);
-      clearTimeout(refreshTimeout);
     };
   }, []);
 
